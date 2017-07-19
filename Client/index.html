@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dit is wel een leuk spelletje</title>
+</head>
+<body>
+
+<script>
+    var env = 'browser';
+
+    switch (env) {
+        case 'browser':
+            alert("hallo browser");
+            break;
+        case "node":
+            const fs = require("fs");
+            var ditwordtnietuitgevoerdopbrowser = fs.readFileSync("patat.mp3");
+            break;
+    }
+</script>
+
+</body>
+</html>
