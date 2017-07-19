@@ -1,0 +1,36 @@
+//Color variables
+@color-black: #000;
+@color-white: #fff;
+
+//A helper function to set the width and height of an element
+.size(@w, @h) {
+  width: @w;
+  height: @h;
+}
+
+#canvas-game {
+  //Set background color of the canvas to black
+  background-color: @color-black;
+
+  //Make canvas fill parent
+  .size(100%, 100%);
+
+  //Make sure that the browser doesn't make our game look like shit by antialiasing the canvas
+  image-rendering: pixelated;
+}
+
+#div-game {
+  .size(100%, 100%);
+
+  overflow: hidden;
+}
+
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  .size(100%, 100%);
+}

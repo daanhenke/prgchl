@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Dit is wel een leuk spelletje</title>
+
+    <link rel="stylesheet" href="css/game.css"
 </head>
 <body>
 
-<script>
-    var env = 'browser';
+<div id="div-game">
+    <canvas id="canvas-game" width="640" height="480">
+        We're sorry, your browser does not support the canvas element. Please install a more recent browser like Google Chrome or Mozilla Firefox.
+    </canvas>
 
-    switch (env) {
-        case 'browser':
-            alert("hallo browser");
-            break;
-        case "node":
-            const fs = require("fs");
-            var ditwordtnietuitgevoerdopbrowser = fs.readFileSync("patat.mp3");
-            break;
-    }
-</script>
+    <script src="js/Game.js"></script>
+    <script src="js/BrowserScript.js"></script>
+</div>
 
 </body>
 </html>
