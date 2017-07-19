@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Font Creator</title>
+
+    <style>
+        body {
+            background: mediumpurple;
+        }
+
+        canvas {
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Font creator</h1>
+<h2>Generates a valid multicolor font file using a canvas</h2>
+<h3>Usage: Name the input file input.png and put it together with this html file, right click canvas once done and save the png file</h3>
+<h5>Current Character:</h5> + <span id="number"></span>
+<canvas id="currentChar" height="1" width="1"></canvas>
+<h5>Output:</h5>
+<canvas id="fontgen" height="1" width="1"></canvas>
+<h5>Input:</h5>
+<canvas id="input" height="1" width="1"></canvas>
+<button id="generate">Generate</button>
+<script>
+    //All terminal colors used by Windows (don't judge me :()
+    const colors = [
+        "#000000",
+        "#000080",
+        "#008000",
+        "#008080",
+        "#800000",
+        "#800080",
+        "#808000",
+        "#C0C0C0",
+        "#808080",
+        "#0000FF",
+        "#00FF00",
+        "#00FFFF",
+        "#FF0000",
+        "#FF00FF",
+        "#FFFF00",
+        "#FFFFFF"
+    ];
+
+    var font = new Image();
+    font.src = "input.png";
+
+    const settings = {
+        "tileWidth": 8,
+        "tileHeight": 12
+    };
+
+    function setpixelated(context){
+        context['imageSmoothingEnabled'] = false;       /* standard */
+        context['mozImageSmoothingEnabled'] = false;    /* Firefox */
+        context['oImageSmoothingEnabled'] = false;      /* Opera */
+        context['webkitImageSmoothingEnabled'] = false; /* Safari */
+        context['msImageSmoothingEnabled'] = false;     /* IE */
+    }
+
+    window.onload = function () {
+        document.getElementById("generate").onclick = function () {
+            const currentCharCanvas = document.getElementById("currentChar");
+            const currentCharContext = currentCharCanvas.getContext("2d");
+            setpixelated(currentCharContext);
+
+            const outputCanvas = document.getElementById("fontgen");
+            const outputContext = outputCanvas.getContext("2d");
+            setpixelated(outputContext);
+
+            const inputCanvas = document.getElementById("input");
+            const inputContext = inputCanvas.getContext("2d");
+            setpixelated(inputContext);
+
+            inputCanvas.width = font.width;
+            inputCanvas.height = font.height;
+            inputContext.drawImage(font, 0, 0);
+
+            currentCharCanvas.width = settings["tileWidth"];
+            currentCharCanvas.height = settings["tileHeight"];
+
+            outputCanvas.width = font.width;
+            outputCanvas.height = settings["tileHeight"] * colors.length * colors.length;
+
+            var fontPixelData = inputContext.getImageData(0, 0, inputCanvas.width, inputCanvas.height);
+
+            function getAlpha(x, y, imageData) {
+                return imageData.data[(y * imageData.width + x) * 4 + 3] !== 255;
+            }
+
+            function copyCharacter(backgroundColor, foregroundColor, x, callback) {
+                currentCharContext.clearRect(0, 0, settings["tileWidth"], settings["tileHeight"]);
+                for (var i = 0; i < currentCharCanvas.width; i++) {
+                    for (var j = 0; j < currentCharCanvas.height; j++) {
+                        if (getAlpha(x + i, j, fontPixelData)) {
+                            currentCharContext.fillStyle = colors[backgroundColor];
+                        } else {
+                            currentCharContext.fillStyle = colors[foregroundColor];
+                        }
+
+                        currentCharContext.fillRect(i, j, 1, 1);
+                    }
+                }
+
+                outputContext.drawImage(currentCharCanvas, x, (backgroundColor * colors.length + foregroundColor) * font.height);
+                callback();
+            }
+
+            var wombocombos = [];
+            var wombi = 0;
+
+            var startDate = new Date();
+
+            colors.forEach(function (a, backgroundColor) {
+                colors.forEach(function (b, foregroundColor) {
+                    for (var i = 0; i < font.width; i+= currentCharCanvas.width) {
+                        wombocombos.push({
+                            bg: backgroundColor,
+                            fg: foregroundColor,
+                            x: i
+                        });
+                    }
+                })
+            });
+
+            function recursive() {
+                var current = wombocombos[wombi];
+                document.getElementById("number").innerText = wombi;
+                copyCharacter(current.bg, current.fg, current.x, function () {
+                    wombi++;
+                    if (wombi < wombocombos.length)
+                        setTimeout(recursive, 1)
+                    else {
+                        alert("Generated " + wombocombos.length + " characters in " + (new Date().getTime() - startDate.getTime()) / 1000 + " seconds!")
+                        console.log("Generated " + wombocombos.length + " characters in " + (new Date().getTime() - startDate.getTime()) / 1000 + " seconds!")
+                    }
+                })
+            }
+
+            recursive();
+        }
+    }
+
+</script>
+</body>
+</html>

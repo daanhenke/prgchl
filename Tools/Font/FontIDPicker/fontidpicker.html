@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #floater {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.48);
+            z-index: 5;
+        }
+
+        #canvas {
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body>
+<div id="floater">
+<h5>Tile: </h5><span id="tile"></span>
+<h5>Foreground color: </h5><span id="fg"></span>
+<h5>Background color: </h5><span id="bg"></span>
+</div>
+<canvas id="canvas"></canvas>
+
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+
+        var font = new Image();
+        font.src = "fontTiles.png";
+
+        font.onload = function () {
+            canvas.width = font.width;
+            canvas.height = font.height;
+            context.drawImage(font, 0, 0);
+        };
+
+        var tileWidth = 8;
+        var tileHeight = 12;
+        var colors = 16;
+
+        var tileE = document.getElementById("tile");
+        var fgE = document.getElementById("fg");
+        var bgE = document.getElementById("bg");
+
+        canvas.onclick = function (event) {
+            var rect = canvas.getBoundingClientRect();
+            var x = event.clientX - rect.left;
+            var y = event.clientY - rect.top;
+
+            tileE.innerText = Math.round(x / tileWidth);
+            bgE.innerText = Math.round((Math.round(y / tileHeight)) / 16);
+            fgE.innerText = Math.round(Math.round(y / tileHeight) - (Math.round(y / tileHeight)) / 16);
+        }
+    }
+
+</script>
+
+</body>
+</html>
